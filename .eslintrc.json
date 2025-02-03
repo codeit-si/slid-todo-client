@@ -1,0 +1,120 @@
+{
+  "root": true,
+  "env": { "browser": true, "es2020": true },
+  "extends": [
+    "airbnb",
+    "airbnb-typescript",
+    "airbnb/hooks",
+    "eslint:recommended",
+    "next/core-web-vitals",
+    "next/typescript",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:prettier/recommended",
+    "prettier"
+  ],
+  "ignorePatterns": [".next", "next.config.mjs"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "project": ["./tsconfig.json"]
+  },
+  "plugins": ["react", "@typescript-eslint", "import", "prettier"],
+  "rules": {
+    "prettier/prettier": "error",
+    // "off"면 비트 연산자 사용 가능
+    "no-bitwise": "off",
+    "import/order": [
+      "error",
+      {
+        // import 그룹을 순서대로 정렬
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          "parent",
+          "sibling",
+          "index",
+          "object",
+          "type"
+        ],
+        // groups에서 예외적으로 순서를 바꾸기 위함
+        "pathGroups": [
+          {
+            "pattern": "react*",
+            "group": "builtin"
+          },
+          {
+            "pattern": "@/*",
+            "group": "internal",
+            "position": "after"
+          }
+        ],
+        // 그룹 단위로 import 줄바꿈
+        "newlines-between": "always",
+        "pathGroupsExcludedImportTypes": ["react*"],
+        // 오름차순 정렬
+        "alphabetize": {
+          "order": "asc"
+        }
+      }
+    ],
+    // 함수 선언식과 화살표 함수만 허용
+    "react/function-component-definition": [
+      2,
+      {
+        "namedComponents": ["function-declaration", "arrow-function"]
+      }
+    ],
+    // import React from "react"를 적지 않아도 되게 함
+    "react/react-in-jsx-scope": "off",
+    // {...rest}이런 식으로 props를 내려주는 것을 허용 (react-hook-form을 사용할 때 필요했음)
+    "react/jsx-props-no-spreading": "off",
+    // label 태크에 htmlFor 속성을 사용할 수 있도록 허용
+    "jsx-a11y/label-has-associated-control": [
+      2,
+      {
+        "labelAttributes": ["htmlFor"]
+      }
+    ],
+    // 빈 값을 return;하는 것을 허용
+    "consistent-return": "off",
+    // 컴포넌트의 default props를 설정을 하지 않아도 됨
+    "react/require-default-props": "off",
+    // prettier의 "printWidth"와 충돌되어 규칙 끔
+    "max-len": "off",
+    // button의 타입을 반드시 명시해야하는 규칙 "off"
+    "react/button-has-type": "off",
+    // 파일에서 export 코드가 존재할 때, 적어도 하나는 export default를 해야하는 규칙 "off"
+    "import/prefer-default-export": "off",
+    // 코드 상으로 밑에 있는 function을 사용하는 것을 허용 (variables는 비허용)
+    "no-use-before-define": [
+      "error",
+      {
+        "functions": true,
+        "variables": false
+      }
+    ],
+    // 위 규칙의 typescript 버전
+    "@typescript-eslint/no-use-before-define": [
+      "error",
+      {
+        "functions": true,
+        "variables": false
+      }
+    ],
+    // 변수 이름의 경우 아래 3가지 형태의 이름을 허용
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "variable",
+        "format": ["camelCase", "PascalCase", "UPPER_CASE"]
+      }
+    ],
+    // 아래 규칙들 에러가 왜 뜨는지 찾아봐야겠음
+    "@typescript-eslint/lines-between-class-members": "off",
+    "@typescript-eslint/no-throw-literal": "off"
+  }
+}

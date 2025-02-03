@@ -15,11 +15,20 @@ jobs:
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
           JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
 
+      - name: Checkout main code
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
       - name: Issue Parser
         uses: stefanbuck/github-issue-praser@v3
         id: issue-parser
         with:
             template-path: .github/ISSUE_TEMPLATE/issue-form.yml
+
+      - name: Log Issue Parser
+        run: |
+          echo '${{ steps.issue-parser.outputs.jsonString }}'
 
       - name: Convert markdown to Jira Syntax
         uses: peter-evans/jira2md@v1
@@ -36,8 +45,8 @@ jobs:
         id: create
         uses: atlassian/gajira-create@v3
         with:
-          project: DIAR
-          issuetype: Subtask
+          project: DEV
+          issuetype: Task
           summary: "${{ github.event.issue.title }}"
           description: "${{ steps.md2jira.outputs.output-text }}"
           fields: |
@@ -47,10 +56,8 @@ jobs:
               }
             }
 
-      - name: Checkout main code
-        uses: actions/checkout@v4
-        with:
-          ref: main
+      - name: Log created issue
+        run: echo "Jira Issue ${{ steps.issue-parser.outputs.parentKey }}/${{ steps.create.outputs.issue }} was created"
 
       - name: Create branch with Ticket number
         run: |

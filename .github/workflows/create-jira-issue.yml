@@ -47,10 +47,10 @@ jobs:
               }
             }
 
-      - name: Checkout develop code
+      - name: Checkout main code
         uses: actions/checkout@v4
         with:
-          ref: develop
+          ref: main
 
       - name: Create branch with Ticket number
         run: |

@@ -2,7 +2,7 @@ name: Close Jira issue
 on:
   issues:
     types:
-      - opened
+      - closed
 jobs:
   close-issue:
     name: Close Jira issue
@@ -31,4 +31,4 @@ jobs:
         uses: atlassian/gajira-transition@v3
         with:
           issue: ${{ env.JIRA_KEY }}
-          transition: Done
+          transition: 완료

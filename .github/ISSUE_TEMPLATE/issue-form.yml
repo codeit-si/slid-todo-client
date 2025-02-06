@@ -1,41 +1,41 @@
-name: '이슈 생성'
-description: 'Repo에 이슈를 생성하며, 생성된 이슈는 Jira와 연동됩니다.'
+name: "이슈 생성"
+description: "Repo에 이슈를 생성하며, 생성된 이슈는 Jira와 연동됩니다."
 labels: [feat]
-title: '이슈 이름을 작성해주세요'
+title: "이슈 이름을 작성해주세요"
 body:
   - type: dropdown
     id: issuetype
     attributes:
-      label: '이슈 유형(issuetype)을 선택해주세요'
+      label: "이슈 유형(issuetype)을 선택해주세요"
       multiple: false
       options:
         - Task
         - Subtask
     validations:
       required: true
-        
+
   - type: input
     id: parentKey
     attributes:
-      label: '🎟️ 상위 작업 (Ticket Number)'
-      description: '상위 작업의 Ticket Number를 기입해주세요'
-      placeholder: 'DEV-00'
+      label: "🎟️ 상위 작업 (Ticket Number)"
+      description: "상위 작업의 Ticket Number를 기입해주세요"
+      placeholder: "DEV-00"
     validations:
       required: true
-      
+
   - type: input
     id: description
     attributes:
-      label: '📝 요약(summary)'
-      description: '이슈에 대해서 간략히 설명해주세요'
+      label: "📝 요약(summary)"
+      description: "이슈에 대해서 간략히 설명해주세요"
     validations:
       required: true
 
   - type: textarea
     id: tasks
     attributes:
-      label: '✅ 체크리스트(Tasks)'
-      description: '해당 이슈에 대해 필요한 작업목록을 작성해주세요'
+      label: "✅ 체크리스트(Tasks)"
+      description: "해당 이슈에 대해 필요한 작업목록을 작성해주세요"
       value: |
         - [ ] Task1
         - [ ] Task2

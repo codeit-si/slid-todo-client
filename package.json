@@ -1,9 +1,4 @@
 {
-	"jira-prepare-commit-msg": {
-    "messagePattern": "[$J] $M",
-    "allowEmptyCommitMessage": false,
-    "ignoredBranchesPattern": "^(master|main|dev|develop|development|release)$"
-  },
   "name": "todo-project",
   "version": "0.1.0",
   "private": true,
@@ -11,8 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "test": "next test",
     "lint": "next lint",
-    "prepare": "husky"
+    "prepare": "husky",
+    "commitlint": "commitlint --edit"
+  },
+  "jira-prepare-commit-msg": {
+    "messagePattern": "[$J] $M",
+    "allowEmptyCommitMessage": false,
+    "ignoredBranchesPattern": "^(master|main|dev|develop|development|release)$"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -31,6 +33,8 @@
     "tailwind-merge": "^3.0.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.7.1",
+    "@commitlint/config-conventional": "^19.7.1",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

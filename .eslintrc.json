@@ -93,16 +93,16 @@
     "no-use-before-define": [
       "error",
       {
-        "functions": true,
-        "variables": false
+        "functions": false,
+        "variables": true
       }
     ],
     // 위 규칙의 typescript 버전
     "@typescript-eslint/no-use-before-define": [
       "error",
       {
-        "functions": true,
-        "variables": false
+        "functions": false,
+        "variables": true
       }
     ],
     // 변수 이름의 경우 아래 3가지 형태의 이름을 허용

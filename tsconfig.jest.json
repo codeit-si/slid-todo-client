@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "isolatedModules": true,
+    "jsx": "react",
+    "module": "commonjs"
+  },
+  "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts"]
+}

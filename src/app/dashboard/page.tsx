@@ -1,16 +1,18 @@
-import {
-  Modal,
-  ModalPortal,
-  ModalTrigger,
-} from "@/components/@common/modal/modal";
+"use client";
+
+import { Modal } from "@/components/@common/modal/modal";
 
 const DashboardPage = () => {
   return (
     <Modal>
-      <ModalTrigger>Open Modal</ModalTrigger>
-      <ModalPortal>
-        <div>Modal is SUCCESSLY OPENED</div>
-      </ModalPortal>
+      {({ Trigger, Portal }) => (
+        <>
+          <Trigger>Open Modal</Trigger>
+          <Portal>
+            <div>Modal is SUCCESSLY OPENED</div>
+          </Portal>
+        </>
+      )}
     </Modal>
   );
 };

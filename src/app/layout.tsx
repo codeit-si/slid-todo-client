@@ -27,6 +27,7 @@ export default function RootLayout({
     <html lang="ko">
       <body className={`${pretendard.variable} font-pretendard`}>
         <TanstackQueryProvider>{children}</TanstackQueryProvider>
+        <div id="modal" />
       </body>
     </html>
   );

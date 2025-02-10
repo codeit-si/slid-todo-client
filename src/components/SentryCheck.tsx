@@ -15,9 +15,7 @@ export default function SentryCheck() {
           },
           async () => {
             const res = await fetch("/api/sentry-api");
-            if (!res.ok) {
-              throw new Error("Sentry Error");
-            }
+            if (!res.ok) throw new Error("Sentry Example Frontend Error");
           },
         );
       }}

@@ -25,15 +25,21 @@ const modalContext = createContext<ModalContextProps>({
 });
 
 interface ModalProps {
+  children: (props: {
+    Trigger: typeof ModalTrigger;
+    Portal: typeof ModalPortal;
+  }) => ReactNode;
   open?: boolean;
   onOpenChange?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-function Modal<T extends { children: ReactNode }>({
-  children,
-  open: openProp,
-  onOpenChange,
-}: T & ModalProps) {
+function useModal() {
+  const context = useContext(modalContext);
+  if (!context) throw new Error("useModal must be used within a ModalProvider");
+  return context;
+}
+
+function Modal({ children, open: openProp, onOpenChange }: ModalProps) {
   const [open, setOpen] = useState<boolean>(openProp ?? false);
   const toggleOpen = useCallback(() => setOpen((prev) => !prev), [setOpen]);
 
@@ -53,13 +59,13 @@ function Modal<T extends { children: ReactNode }>({
 
   return (
     <modalContext.Provider value={providerValue}>
-      {children}
+      {children({ Trigger: ModalTrigger, Portal: ModalPortal })}
     </modalContext.Provider>
   );
 }
 
 function ModalTrigger({ children }: PropsWithChildren) {
-  const { toggleOpen } = useContext(modalContext);
+  const { toggleOpen } = useModal();
 
   return (
     <button type="button" onClick={toggleOpen}>
@@ -69,7 +75,7 @@ function ModalTrigger({ children }: PropsWithChildren) {
 }
 
 function ModalPortal({ children }: PropsWithChildren) {
-  const { open, setOpen } = useContext(modalContext);
+  const { open, setOpen } = useModal();
 
   const ChildrenWithCloseButton = (
     <div>
@@ -91,7 +97,7 @@ function ModalPortal({ children }: PropsWithChildren) {
 }
 
 function ModalOverlay() {
-  const { setOpen } = useContext(modalContext);
+  const { setOpen } = useModal();
 
   useEffect(() => {
     function handleEscapeKey(e: KeyboardEvent) {

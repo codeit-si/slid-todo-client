@@ -37,7 +37,7 @@ const mockFetchTodos = async (pageParam = 1) => {
       const todos: Todo[] = Array.from({ length: 40 }, (_, i) => ({
         id: `todo-${pageParam}-${i}`,
         title: `${pageParam}-${i + 1} ${getRandomNote()}`,
-        status: i % 2 === 0 ? "todo" : "done",
+        status: Math.random() > 0.5 ? "todo" : "done",
         hasNote: Math.random() > 0.5 ? getRandomNote() : null,
         hasLink: Math.random() > 0.5,
         hasFile: Math.random() > 0.5,
@@ -81,7 +81,7 @@ function ListTodoStructure({ fetchTodos }: ListTodoProps) {
     if (data) {
       const allTodos = data.pages
         .flatMap((page) => page.todos)
-        .filter((x) => x.status !== filter);
+        .filter((x) => (filter === "all" ? true : x.status === filter));
       setTodos(allTodos);
     }
   }, [data, filter]);
@@ -97,9 +97,13 @@ function ListTodoStructure({ fetchTodos }: ListTodoProps) {
   };
 
   const statusButtons = (status: string) => {
-    if (status === "all") return "All";
-    if (status === "done") return "To do";
-    return "Done";
+    if (status === "todo") {
+      return "To do";
+    }
+    if (status === "done") {
+      return "Done";
+    }
+    return "All";
   };
 
   const statusMap = (["all", "todo", "done"] as const).map((status) => {
@@ -169,12 +173,12 @@ function ListTodoStructure({ fetchTodos }: ListTodoProps) {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <label
-                  htmlFor="todo-check"
+                  htmlFor={`todo-check-${index}`}
                   className="relative flex cursor-pointer items-center"
                 >
                   <input
                     type="checkbox"
-                    id="todo-check"
+                    id={`todo-check-${index}`}
                     checked={todo.status === "done"}
                     onChange={() => toggleStatus(todo.id)}
                     className="peer absolute hidden"

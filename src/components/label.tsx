@@ -1,15 +1,18 @@
-export interface LabelProps {
-  label: string;
-  htmlFor?: string;
+import { LabelHTMLAttributes, ReactNode } from "react";
+
+import { cn } from "@/lib/cn";
+
+interface LabelProps extends LabelHTMLAttributes<HTMLLabelElement> {
+  children: ReactNode;
 }
 
-export default function Label({ label, htmlFor }: LabelProps) {
+export default function Label({ className, children, ...props }: LabelProps) {
   return (
     <label
-      htmlFor={htmlFor}
-      className="block text-base font-semibold text-slate-800"
+      className={cn("block text-base font-semibold text-slate-800", className)}
+      {...props}
     >
-      {label}
+      {children}
     </label>
   );
 }

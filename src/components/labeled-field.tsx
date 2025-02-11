@@ -1,11 +1,13 @@
+import React, { HTMLAttributes, LabelHTMLAttributes, ReactNode } from "react";
+
 import { cn } from "@/lib/cn";
 
-import Label, { LabelProps } from "./label";
+import Label from "./label";
 
-interface LabeledFieldProps
-  extends LabelProps,
-    React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
+interface LabeledFieldProps extends HTMLAttributes<HTMLDivElement> {
+  label: ReactNode;
+  htmlFor: LabelHTMLAttributes<HTMLLabelElement>["htmlFor"];
+  children: ReactNode;
 }
 
 export default function LabeledField({
@@ -17,7 +19,7 @@ export default function LabeledField({
 }: LabeledFieldProps) {
   return (
     <div className={cn("flex flex-col space-y-3", className)} {...props}>
-      <Label label={label} htmlFor={htmlFor} />
+      <Label htmlFor={htmlFor}>{label}</Label>
       {children}
     </div>
   );

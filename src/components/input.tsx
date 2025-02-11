@@ -35,6 +35,7 @@ function Input(
           type="button"
           onClick={() => setShowPassword((prev) => !prev)}
           aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 표시하기"}
+          aria-pressed={showPassword}
         >
           {showPassword ? <VisibilityOnIcon /> : <VisibilityOffIcon />}
         </button>

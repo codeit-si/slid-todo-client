@@ -1,10 +1,14 @@
 export interface LabelProps {
   label: string;
+  htmlFor?: string;
 }
 
-export default function Label({ label }: LabelProps) {
+export default function Label({ label, htmlFor }: LabelProps) {
   return (
-    <label className="block text-base font-semibold text-slate-800">
+    <label
+      htmlFor={htmlFor}
+      className="block text-base font-semibold text-slate-800"
+    >
       {label}
     </label>
   );

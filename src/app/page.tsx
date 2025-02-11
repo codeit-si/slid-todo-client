@@ -2,6 +2,9 @@ import { Suspense } from "react";
 
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
+import SentryCheck from "@/components/SentryCheck";
+import ListTodo from "@/components/list-todo";
+
 import PostPage from "../components/post-page";
 import getQueryClient from "../lib/get-query-client";
 
@@ -23,10 +26,12 @@ export default async function Home() {
   return (
     <main>
       <h1>HomePage</h1>
+      <SentryCheck />
       <HydrationBoundary state={dehydrate(queryClient)}>
         {/* Streaming 컴포넌트트 */}
         <Suspense fallback={<h1>Loading...</h1>}>
           <PostPage />
+          <ListTodo />
         </Suspense>
       </HydrationBoundary>
     </main>

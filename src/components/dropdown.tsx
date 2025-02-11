@@ -20,7 +20,7 @@ const Dropdown = ({ size = "md", items }: DropdownProps) => {
     >
       {items.map((item, index) => (
         <button
-          key={index}
+          key={`${item.label}-${index}`}
           onClick={item.onClick}
           className={`w-full flex justify-center items-center text-[#334155] font-pretendard font-normal ${
             size === "sm" ? "h-[34px] px-2 text-sm" : "h-[42px] px-4 text-lg"

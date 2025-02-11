@@ -1,6 +1,6 @@
 import { Children, ComponentType, isValidElement, ReactNode } from "react";
 
-export default function splitChildrenByComponent(
+export default function splitChildrenByComponents(
   targets: ComponentType[],
   children: ReactNode,
 ) {

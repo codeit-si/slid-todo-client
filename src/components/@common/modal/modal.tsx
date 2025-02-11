@@ -12,8 +12,7 @@ import {
 import { createPortal } from "react-dom";
 
 import { cn } from "@/lib/cn";
-
-import splitChildrenByComponent from "../../../utils/react-child-utils/split-children-by-component";
+import splitChildrenByComponents from "@/utils/react-child-utils/split-children-by-component";
 
 type ModalContextProps = {
   open: boolean;
@@ -120,10 +119,11 @@ function ModalContent({
   children,
   className,
 }: PropsWithChildren<ModalCommonProps>) {
-  const [[title, close, description], nonModalChild] = splitChildrenByComponent(
-    [ModalTitle, ModalClose, ModalDescription],
-    children,
-  );
+  const [[title, close, description], nonModalChild] =
+    splitChildrenByComponents(
+      [ModalTitle, ModalClose, ModalDescription],
+      children,
+    );
 
   return (
     <div

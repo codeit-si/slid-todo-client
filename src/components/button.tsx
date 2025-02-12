@@ -17,9 +17,9 @@ const ButtonVariants = cva("font-semibold px-18 py-8", {
       round: "rounded-3xl",
     },
     size: {
-      lg: "min-w-291 h-48 text-base",
-      md: "min-w-150 h-44 text-base",
-      sm: "min-w-84 h-36 text-sm",
+      lg: "min-w-291 min-h-48 text-base",
+      md: "min-w-150 min-h-44 text-base",
+      sm: "min-w-84 min-h-36 text-sm",
     },
   },
   defaultVariants: {
@@ -50,9 +50,7 @@ export default function Button({
       className={cn(ButtonVariants({ variant, shape, size }), className)}
       {...props}
     >
-      <div className="flex h-full w-full items-center justify-center">
-        {children}
-      </div>
+      <div className="flex items-center justify-center">{children}</div>
     </button>
   );
 }

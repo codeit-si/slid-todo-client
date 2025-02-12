@@ -19,7 +19,7 @@ export type Todo = {
   hasFile: boolean;
 };
 interface ListTodoProps {
-  fetchTodos: (
+  fetchTodos?: (
     pageParam?: number,
   ) => Promise<{ todos: Todo[]; nextPage?: number }>;
 }
@@ -65,9 +65,6 @@ const mockFetchTodos = async (pageParam = 1) => {
     }, 500);
   });
 };
-export default function ListTodo() {
-  return <ListTodoStructure fetchTodos={mockFetchTodos} />;
-}
 const TodoTitleAndCheckBox = ({
   index,
   todo,
@@ -86,8 +83,8 @@ const TodoTitleAndCheckBox = ({
           onChange={() => toggleStatus(todo.id)}
           className="peer absolute hidden"
         />
-        <div className="flex h-20 w-20 items-center justify-center rounded-md border peer-checked:border-blue-500 peer-checked:bg-blue-500">
-          <span className="absolute h-full w-full text-center text-sm font-bold text-white">
+        <div className="flex h-20 w-20 items-center justify-center rounded-md border peer-checked:border-purple-500 peer-checked:bg-purple-500">
+          <span className="absolute h-full w-full text-center text-sm font-bold text-slate-50">
             ✓
           </span>
         </div>
@@ -113,7 +110,7 @@ const TodoEditAndDeleteAndIcons = ({
           ⋮
         </button>
         <div
-          className={`${activeKebab !== index ? "hidden" : "flex"} absolute -left-70 z-10 w-80 flex-col items-center gap-10 rounded-lg bg-white p-10 shadow-md`}
+          className={`${activeKebab !== index ? "hidden" : "flex"} absolute -left-70 z-10 w-80 flex-col items-center gap-10 rounded-lg bg-slate-50 p-10 shadow-md`}
         >
           <button>수정하기</button>
           <button>삭제하기</button>
@@ -133,7 +130,9 @@ const Note = ({ noteIcon, todo }: NoteProps) => {
   );
 };
 
-function ListTodoStructure({ fetchTodos }: ListTodoProps) {
+export default function ListTodo({
+  fetchTodos = mockFetchTodos,
+}: ListTodoProps) {
   const [filter, setFilter] = useState<"all" | "todo" | "done">("all");
   const [todos, setTodos] = useState<Todo[]>([]);
   const [activeKebab, setActiveKebab] = useState<null | number>(null);
@@ -186,10 +185,15 @@ function ListTodoStructure({ fetchTodos }: ListTodoProps) {
     <li
       key={status}
       className={`${
-        status === filter ? "border-blue-500 bg-blue-500 text-white" : ""
-      } cursor-pointer rounded-3xl border px-10 py-5`}
+        status === filter ? "border-purple-500 bg-purple-500 text-slate-50" : ""
+      } cursor-pointer rounded-3xl border`}
     >
-      <button onClick={() => setFilter(status)}>{statusLabels[status]}</button>
+      <button
+        className="h-full w-full px-10 py-5"
+        onClick={() => setFilter(status)}
+      >
+        {statusLabels[status]}
+      </button>
     </li>
   ));
 
@@ -237,7 +241,7 @@ function ListTodoStructure({ fetchTodos }: ListTodoProps) {
   );
 
   return (
-    <div className="mx-auto min-h-[2080px] w-full max-w-2xl rounded-xl bg-white p-20 text-sm text-slate-800">
+    <div className="mx-auto min-h-[2080px] w-full max-w-2xl rounded-xl border-slate-300 bg-slate-50 p-20 text-sm text-slate-800">
       <ul className="mb-20 flex gap-10">{statusMap}</ul>
       <ul className="space-y-15">
         {todos.map((todo, index) => (

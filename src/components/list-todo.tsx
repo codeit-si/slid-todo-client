@@ -4,15 +4,13 @@ import { useEffect, useState } from "react";
 
 import {
   useInfiniteQuery,
-  QueryClient,
-  QueryClientProvider,
   InfiniteQueryObserverResult,
   InfiniteData,
 } from "@tanstack/react-query";
 
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
-type Todo = {
+export type Todo = {
   id: string;
   title: string;
   status: "todo" | "done";
@@ -41,6 +39,7 @@ type NoteProps = {
   todo: Todo;
   noteIcon: JSX.Element;
 };
+
 const notes = [
   "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque, quod.",
   "Lorem ipsum dolor sit amet, consectetur adipisicing.",
@@ -66,15 +65,8 @@ const mockFetchTodos = async (pageParam = 1) => {
     }, 500);
   });
 };
-export default function ListTodo({
-  fetchTodos = mockFetchTodos,
-}: Partial<ListTodoProps>) {
-  const queryClient = new QueryClient();
-  return (
-    <QueryClientProvider client={queryClient}>
-      <ListTodoStructure fetchTodos={fetchTodos} />
-    </QueryClientProvider>
-  );
+export default function ListTodo() {
+  return <ListTodoStructure fetchTodos={mockFetchTodos} />;
 }
 const TodoTitleAndCheckBox = ({
   index,

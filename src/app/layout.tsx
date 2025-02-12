@@ -1,3 +1,4 @@
+import SentryCheck from "@/components/SentryCheck";
 import TanstackQueryProvider from "@/lib/tanstack-query-provider";
 
 import type { Metadata } from "next";
@@ -17,6 +18,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
+        <SentryCheck />
         <TanstackQueryProvider>{children}</TanstackQueryProvider>
       </body>
     </html>

@@ -1,42 +1,50 @@
 "use client";
 
-import React from "react";
+import { useId } from "react";
 
+// Dropdown 컴포넌트를 사용할 때는 다음과 같이 사용할 수 있습니다:
 // import Dropdown from "@/components/dropdown";
-// <Dropdown size="{md, sm 중에 선택}" items = { [ {label: "{드롭 다운 항목 텍스트}", onClick: {함수}}] } /> 이런 식으로 사용하시면 됩니다.
-// 예) <Dropdown size="md" items={[ { label: "수정하기", onClick: handleEdit }, { label: "삭제하기", onClick: handleDelete }, ]} />
+// 예시 1:
+// <Dropdown size="md" items={[ { label: "수정하기", onClick: handleEdit }, { label: "삭제하기", onClick: handleDelete } ]} />
+
+// 예시 2:
+// <Dropdown size="sm" items={[ { label: "수정하기", onClick: handleEdit }, { label: "삭제하기", onClick: handleDelete } ]} />
 
 interface DropdownProps {
   size?: "sm" | "md";
-  items: { label: string; onClick: () => void }[];
+  items: { txt: string; onClick: () => void }[];
 }
 
-const Dropdown = ({ size = "md", items }: DropdownProps) => {
+function Dropdown({ size = "md", items }: DropdownProps) {
+  const dropdownId = useId();
+
+  const widthClass = size === "sm" ? "w-81" : "w-106";
+  const itemHeightClass =
+    size === "sm" ? "h-34 px-2 text-sm" : "h-42 px-4 text-lg";
+
   return (
     <div
-      className={`absolute ${
-        size === "sm" ? "w-[81px] h-auto" : "w-[106px] h-auto"
-      } shadow-lg bg-white rounded-[12px] overflow-hidden`}
+      id={dropdownId}
+      role="menu"
+      aria-label="옵션 선택 드롭다운"
+      className={`absolute z-50 h-auto ${widthClass} overflow-hidden rounded-[12px] bg-white shadow-lg`}
     >
-      {items.map((item, index) => (
-        <button
-          key={`${item.label}-${index}`}
-          onClick={item.onClick}
-          className={`w-full flex justify-center items-center text-[#334155] font-pretendard font-normal ${
-            size === "sm" ? "h-[34px] px-2 text-sm" : "h-[42px] px-4 text-lg"
-          } ${
-            index === 0
-              ? "rounded-t-[12px]"
-              : index === items.length - 1
-              ? "rounded-b-[12px]"
-              : ""
-          }`}
-        >
-          {item.label}
-        </button>
-      ))}
+      {items.map(({ txt, onClick }) => {
+        const key = crypto.randomUUID(); // 중복 방지를 위한 유니크한 key
+
+        return (
+          <button
+            key={key}
+            onClick={onClick}
+            role="menuitem"
+            className={`font-pretendard flex w-full items-center justify-center font-normal text-[#334155] ${itemHeightClass}`}
+          >
+            {txt}
+          </button>
+        );
+      })}
     </div>
   );
-};
+}
 
 export default Dropdown;

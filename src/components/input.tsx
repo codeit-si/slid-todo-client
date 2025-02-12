@@ -7,9 +7,9 @@ import VisibilityOnIcon from "@/assets/visibility_on.svg";
 import { cn } from "@/lib/cn";
 
 const BASE_CLASS =
-  "flex items-center justify-center space-x-2 rounded-xl border border-slate-50 bg-slate-50 px-6 py-3 text-base font-normal focus-within:border-blue-500 hover:border-blue-300";
+  "flex items-center justify-center space-x-8 rounded-xl border border-slate-50 bg-slate-50 px-24 py-12 text-base font-normal focus-within:border-purple-500 hover:border-purple-300";
 
-const RESPONSIVE_CLASS = "h-[44px] w-[343px] md:h-[48px] md:w-[612px]";
+const RESPONSIVE_CLASS = "h-44 w-343 md:h-48 md:w-612";
 
 function Input(
   {

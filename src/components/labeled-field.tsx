@@ -18,7 +18,7 @@ export default function LabeledField({
   ...props
 }: LabeledFieldProps) {
   return (
-    <div className={cn("flex flex-col space-y-3", className)} {...props}>
+    <div className={cn("flex flex-col gap-y-12", className)} {...props}>
       <Label htmlFor={htmlFor}>{label}</Label>
       {children}
     </div>

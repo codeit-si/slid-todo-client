@@ -12,7 +12,13 @@ const BASE_CLASS =
 const RESPONSIVE_CLASS = "h-[44px] w-[343px] md:h-[48px] md:w-[612px]";
 
 function Input(
-  { type = "text", className, ...props }: InputHTMLAttributes<HTMLInputElement>,
+  {
+    type = "text",
+    value,
+    onChange,
+    className,
+    ...props
+  }: InputHTMLAttributes<HTMLInputElement>,
   ref?: Ref<HTMLInputElement>,
 ) {
   const [showPassword, setShowPassword] = useState(false);
@@ -22,6 +28,8 @@ function Input(
       <input
         className="m-0 flex-1 appearance-none border-none bg-transparent p-0 text-slate-800 outline-none placeholder:text-slate-400"
         type={type === "password" ? (showPassword ? "text" : "password") : type}
+        value={value}
+        onChange={onChange}
         ref={ref}
         {...props}
       />

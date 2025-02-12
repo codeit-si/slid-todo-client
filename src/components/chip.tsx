@@ -12,7 +12,7 @@ interface ChipProps {
   text: string;
   color?: "slate-100" | "slate-900";
   size?: "large" | "small";
-  checked?: boolean; // 상태를 표시만 해줄 checked prop
+  checked?: boolean;
 }
 
 const Chip = ({

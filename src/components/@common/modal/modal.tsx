@@ -1,9 +1,10 @@
 "use client";
 
 import {
+  ComponentProps,
   createContext,
+  ElementType,
   PropsWithChildren,
-  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -14,10 +15,11 @@ import { createPortal } from "react-dom";
 import { cn } from "@/lib/cn";
 import splitChildrenByComponents from "@/utils/react-child-utils/split-children-by-component";
 
+import Slot from "../slot/slot";
+
 type ModalContextProps = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  toggleOpen: () => void;
 };
 
 interface ModalCommonProps {
@@ -27,7 +29,6 @@ interface ModalCommonProps {
 const modalContext = createContext<ModalContextProps>({
   open: false,
   setOpen: () => {},
-  toggleOpen: () => {},
 });
 
 function useModal() {
@@ -38,29 +39,42 @@ function useModal() {
 
 interface ModalRootProps {
   open?: boolean;
-  onOpenChange?: React.Dispatch<React.SetStateAction<boolean>>;
+  onOpenChange?: (open: boolean) => void;
 }
 
 function ModalRoot({
   children,
-  open: openProp,
+  open: openProp = false,
   onOpenChange,
 }: PropsWithChildren<ModalRootProps>) {
-  const [open, setOpen] = useState<boolean>(openProp ?? false);
-  const toggleOpen = useCallback(() => setOpen((prev) => !prev), [setOpen]);
+  const [open, setOpen] = useState<boolean>(openProp);
+
+  useEffect(() => {
+    setOpen(openProp);
+  }, [openProp]);
 
   useEffect(() => {
     if (!onOpenChange) return undefined;
     onOpenChange(open);
   }, [open, onOpenChange]);
 
+  useEffect(() => {
+    function handleEscapeKey(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setOpen(false);
+      }
+    }
+
+    document.addEventListener("keydown", handleEscapeKey);
+    return () => document.removeEventListener("keydown", handleEscapeKey);
+  }, []);
+
   const providerValue = useMemo(
     () => ({
       open,
       setOpen,
-      toggleOpen,
     }),
-    [open, setOpen, toggleOpen],
+    [open, setOpen],
   );
 
   return (
@@ -74,43 +88,54 @@ function ModalTrigger({
   children,
   className,
 }: PropsWithChildren<ModalCommonProps>) {
-  const { toggleOpen } = useModal();
+  const { setOpen } = useModal();
 
   return (
-    <button className={cn("", className)} type="button" onClick={toggleOpen}>
+    <button
+      className={cn("", className)}
+      type="button"
+      onClick={() => setOpen(true)}
+    >
       {children}
     </button>
   );
 }
 
-function ModalPortal({ children }: PropsWithChildren<ModalCommonProps>) {
+function ModalPortal({
+  children,
+  className = "",
+}: PropsWithChildren<ModalCommonProps>) {
   const { open } = useModal();
+  const [isClient, setIsClient] = useState(false);
 
-  const ChildrenWithCloseButton = <div>{children}</div>;
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  const ChildrenWithCloseButton = <div className={className}>{children}</div>;
+
+  if (!isClient) return null;
 
   return open && createPortal(ChildrenWithCloseButton, document.body);
 }
 
-function ModalOverlay({ className }: ModalCommonProps) {
+interface ModalOverlayProps {
+  isTriggerActive?: boolean;
+}
+
+function ModalOverlay({
+  className,
+  isTriggerActive = true,
+}: ModalCommonProps & ModalOverlayProps) {
   const { setOpen } = useModal();
-
-  useEffect(() => {
-    function handleEscapeKey(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        setOpen(false);
-      }
-    }
-
-    document.addEventListener("keydown", handleEscapeKey);
-    return () => document.removeEventListener("keydown", handleEscapeKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <div
       role="presentation"
       className={cn("fixed inset-0 bg-black opacity-50", className)}
-      onClick={() => setOpen((prev) => !prev)}
+      onClick={() => {
+        if (isTriggerActive) setOpen(false);
+      }}
     />
   );
 }
@@ -119,11 +144,10 @@ function ModalContent({
   children,
   className,
 }: PropsWithChildren<ModalCommonProps>) {
-  const [[title, close, description], nonModalChild] =
-    splitChildrenByComponents(
-      [ModalTitle, ModalClose, ModalDescription],
-      children,
-    );
+  const [[title, description], nonModalChild] = splitChildrenByComponents(
+    [ModalTitle, ModalDescription],
+    children,
+  );
 
   return (
     <div
@@ -132,41 +156,38 @@ function ModalContent({
         className,
       )}
     >
-      <div className="flex justify-between">
-        {title}
-        {close}
-      </div>
+      <div className="flex justify-between">{title}</div>
       {description}
       {nonModalChild}
     </div>
   );
 }
 
-interface ModalChildProps extends ModalCommonProps {
+type ModalElementProps<T extends ElementType> = ComponentProps<T> & {
   asChild?: boolean;
-}
+};
 
 function ModalTitle({
   children,
   className,
   asChild = false,
-}: PropsWithChildren<ModalChildProps>) {
-  if (asChild) {
-    return children;
-  }
-  return <h2 className={cn("text-xl font-semibold", className)}>{children}</h2>;
+}: ModalElementProps<"h2">) {
+  const Comp = asChild ? Slot : "h2";
+
+  return (
+    <Comp className={cn("text-xl font-semibold", className)}>{children}</Comp>
+  );
 }
 
 function ModalDescription({
   children,
   className,
   asChild = false,
-}: PropsWithChildren<ModalChildProps>) {
-  if (asChild) {
-    return children;
-  }
+}: ModalElementProps<"p">) {
+  const Comp = asChild ? Slot : "p";
+
   return (
-    <div className={cn("text-xl font-semibold", className)}>{children}</div>
+    <Comp className={cn("text-xl font-semibold", className)}>{children}</Comp>
   );
 }
 
@@ -174,19 +195,17 @@ function ModalClose({
   children,
   className,
   asChild = false,
-}: PropsWithChildren<ModalChildProps>) {
+}: ModalElementProps<"button">) {
   const { setOpen } = useModal();
+  const Comp = asChild ? Slot : "button";
 
-  if (asChild) {
-    return children;
-  }
   return (
-    <button
+    <Comp
       className={cn("text-xl font-semibold", className)}
       onClick={() => setOpen(false)}
     >
-      X
-    </button>
+      {children}
+    </Comp>
   );
 }
 

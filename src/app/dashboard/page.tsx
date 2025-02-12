@@ -36,7 +36,7 @@ const DashboardPage = () => {
           </Modal.Content>
           {/* overlay는 모달의 배경을 담당 (필수) */}
           {/* isTriggerActive 속성으로 배경 클릭 시 모달 닫기 여부 설정 */}
-          <Modal.Overlay className="bg-gray-500" isTriggerActive={false} />
+          <Modal.Overlay className="bg-gray-500" closeOnOverlyClick={false} />
         </Modal.Portal>
       </Modal.Root>
       <button className="p-4" onClick={handleToggleModal}>

@@ -116,7 +116,6 @@
     // 아래 규칙들 에러가 왜 뜨는지 찾아봐야겠음
     "@typescript-eslint/lines-between-class-members": "off",
     "@typescript-eslint/no-throw-literal": "off",
-    // 중첩 삼항 연산자 허용
-    "eslint no-nested-ternary": "off"
+    "no-nested-ternary": "off"
   }
 }

@@ -2,6 +2,8 @@ import { Suspense } from "react";
 
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
+import SentryCheck from "@/components/SentryCheck";
+
 import PostPage from "../components/post-page";
 import getQueryClient from "../lib/get-query-client";
 
@@ -29,6 +31,7 @@ export default async function Home() {
           <PostPage />
         </Suspense>
       </HydrationBoundary>
+      <SentryCheck />
     </main>
   );
 }

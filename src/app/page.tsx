@@ -1,14 +1,15 @@
+"use server";
+
 import { Suspense } from "react";
 
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
-import SentryCheck from "@/components/SentryCheck";
+import ListTodo from "@/components/list-todo";
 
 import PostPage from "../components/post-page";
 import getQueryClient from "../lib/get-query-client";
 
 import { postsOptions } from "./posts";
-import sleep from "./sleep";
 
 /**
  * Prefetching & Streaming을 모두 사용하는 방법
@@ -17,10 +18,8 @@ import sleep from "./sleep";
  */
 export default async function Home() {
   const queryClient = getQueryClient();
-
   // 미리 페칭 코드 (Warning: 클라이언트와 달리 서버에서는 매번 데이터를 요첨함)
   queryClient.prefetchQuery(postsOptions);
-  await sleep(2);
 
   return (
     <main>
@@ -29,9 +28,9 @@ export default async function Home() {
         {/* Streaming 컴포넌트트 */}
         <Suspense fallback={<h1>Loading...</h1>}>
           <PostPage />
+          <ListTodo />
         </Suspense>
       </HydrationBoundary>
-      <SentryCheck />
     </main>
   );
 }

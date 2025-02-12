@@ -26,7 +26,7 @@ function Input(
   return (
     <div className={cn(BASE_CLASS, RESPONSIVE_CLASS, className)}>
       <input
-        className="m-0 flex-1 appearance-none border-none bg-transparent p-0 text-slate-800 outline-none placeholder:text-slate-400"
+        className="bg-transparent m-0 flex-1 appearance-none border-none p-0 text-slate-800 outline-none placeholder:text-slate-400"
         type={type === "password" ? (showPassword ? "text" : "password") : type}
         value={value}
         onChange={onChange}

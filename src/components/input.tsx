@@ -17,16 +17,11 @@ function Input(
 ) {
   const [showPassword, setShowPassword] = useState(false);
 
-  let inputType = type;
-  if (type === "password") {
-    inputType = showPassword ? "text" : "password";
-  }
-
   return (
     <div className={cn(BASE_CLASS, RESPONSIVE_CLASS, className)}>
       <input
         className="m-0 flex-1 appearance-none border-none bg-transparent p-0 text-slate-800 outline-none placeholder:text-slate-400"
-        type={inputType}
+        type={type === "password" ? (showPassword ? "text" : "password") : type}
         ref={ref}
         {...props}
       />

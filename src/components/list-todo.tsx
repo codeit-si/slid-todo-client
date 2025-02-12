@@ -82,7 +82,7 @@ const TodoTitleAndCheckBox = ({
   toggleStatus,
 }: TodoTitleAndCheckBoxProps) => {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-10">
       <label
         htmlFor={`todo-check-${index}`}
         className="relative flex cursor-pointer items-center"
@@ -94,7 +94,7 @@ const TodoTitleAndCheckBox = ({
           onChange={() => toggleStatus(todo.id)}
           className="peer absolute hidden"
         />
-        <div className="flex h-5 w-5 items-center justify-center rounded-md border peer-checked:border-blue-500 peer-checked:bg-blue-500">
+        <div className="flex h-20 w-20 items-center justify-center rounded-md border peer-checked:border-blue-500 peer-checked:bg-blue-500">
           <span className="absolute h-full w-full text-center text-sm font-bold text-white">
             ✓
           </span>
@@ -113,15 +113,15 @@ const TodoEditAndDeleteAndIcons = ({
   handleKebabClick,
 }: TodoEditAndDeleteAndIconsProps) => {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-15">
       {todo.hasLink && <p>링크</p>}
       {todo.hasFile && <p>파일</p>}
       <div className="relative">
-        <button className="px-1" onClick={() => handleKebabClick(index)}>
+        <button className="px-3" onClick={() => handleKebabClick(index)}>
           ⋮
         </button>
         <div
-          className={`${activeKebab !== index ? "hidden" : "flex"} absolute -left-16 z-10 w-20 flex-col items-center gap-2 rounded-lg bg-white p-2 shadow-md`}
+          className={`${activeKebab !== index ? "hidden" : "flex"} absolute -left-70 z-10 w-80 flex-col items-center gap-10 rounded-lg bg-white p-10 shadow-md`}
         >
           <button>수정하기</button>
           <button>삭제하기</button>
@@ -132,7 +132,7 @@ const TodoEditAndDeleteAndIcons = ({
 };
 const Note = ({ noteIcon, todo }: NoteProps) => {
   return (
-    <div className="ml-8 mt-2 flex gap-3 text-slate-700">
+    <div className="ml-30 mt-10 flex items-center gap-10 text-slate-700">
       {noteIcon}
       <p className={`${todo.status === "done" ? "line-through" : ""}`}>
         {todo.hasNote}
@@ -195,7 +195,7 @@ function ListTodoStructure({ fetchTodos }: ListTodoProps) {
       key={status}
       className={`${
         status === filter ? "border-blue-500 bg-blue-500 text-white" : ""
-      } cursor-pointer rounded-3xl border px-3 py-1`}
+      } cursor-pointer rounded-3xl border px-10 py-5`}
     >
       <button onClick={() => setFilter(status)}>{statusLabels[status]}</button>
     </li>
@@ -245,9 +245,9 @@ function ListTodoStructure({ fetchTodos }: ListTodoProps) {
   );
 
   return (
-    <div className="mx-auto min-h-[2080px] w-full max-w-2xl rounded-xl bg-white p-6 text-sm text-slate-800">
-      <ul className="mb-6 flex gap-2">{statusMap}</ul>
-      <ul className="space-y-4">
+    <div className="mx-auto min-h-[2080px] w-full max-w-2xl rounded-xl bg-white p-20 text-sm text-slate-800">
+      <ul className="mb-20 flex gap-10">{statusMap}</ul>
+      <ul className="space-y-15">
         {todos.map((todo, index) => (
           <li key={todo.id}>
             <div className="flex items-center justify-between">

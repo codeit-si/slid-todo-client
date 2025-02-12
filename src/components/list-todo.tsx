@@ -20,7 +20,27 @@ type Todo = {
   hasLink: boolean;
   hasFile: boolean;
 };
+interface ListTodoProps {
+  fetchTodos: (
+    pageParam?: number,
+  ) => Promise<{ todos: Todo[]; nextPage?: number }>;
+}
+type BaseTodoProps = {
+  index: number;
+  todo: Todo;
+};
+type TodoTitleAndCheckBoxProps = BaseTodoProps & {
+  toggleStatus: (id: string) => void;
+};
 
+type TodoEditAndDeleteAndIconsProps = BaseTodoProps & {
+  activeKebab: number | null;
+  handleKebabClick: (index: number) => void;
+};
+type NoteProps = {
+  todo: Todo;
+  noteIcon: JSX.Element;
+};
 const notes = [
   "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque, quod.",
   "Lorem ipsum dolor sit amet, consectetur adipisicing.",
@@ -46,14 +66,80 @@ const mockFetchTodos = async (pageParam = 1) => {
     }, 500);
   });
 };
-
-interface ListTodoProps {
-  fetchTodos: (
-    pageParam?: number,
-  ) => Promise<{ todos: Todo[]; nextPage?: number }>;
+export default function ListTodo({
+  fetchTodos = mockFetchTodos,
+}: Partial<ListTodoProps>) {
+  const queryClient = new QueryClient();
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ListTodoStructure fetchTodos={fetchTodos} />
+    </QueryClientProvider>
+  );
 }
-
-const queryClient = new QueryClient();
+const TodoTitleAndCheckBox = ({
+  index,
+  todo,
+  toggleStatus,
+}: TodoTitleAndCheckBoxProps) => {
+  return (
+    <div className="flex items-center gap-3">
+      <label
+        htmlFor={`todo-check-${index}`}
+        className="relative flex cursor-pointer items-center"
+      >
+        <input
+          type="checkbox"
+          id={`todo-check-${index}`}
+          checked={todo.status === "done"}
+          onChange={() => toggleStatus(todo.id)}
+          className="peer absolute hidden"
+        />
+        <div className="flex h-5 w-5 items-center justify-center rounded-md border peer-checked:border-blue-500 peer-checked:bg-blue-500">
+          <span className="absolute h-full w-full text-center text-sm font-bold text-white">
+            ✓
+          </span>
+        </div>
+      </label>
+      <span className={`${todo.status === "done" ? "line-through" : ""}`}>
+        {todo.title}
+      </span>
+    </div>
+  );
+};
+const TodoEditAndDeleteAndIcons = ({
+  todo,
+  index,
+  activeKebab,
+  handleKebabClick,
+}: TodoEditAndDeleteAndIconsProps) => {
+  return (
+    <div className="flex items-center gap-3">
+      {todo.hasLink && <p>링크</p>}
+      {todo.hasFile && <p>파일</p>}
+      <div className="relative">
+        <button className="px-1" onClick={() => handleKebabClick(index)}>
+          ⋮
+        </button>
+        <div
+          className={`${activeKebab !== index ? "hidden" : "flex"} absolute -left-16 z-10 w-20 flex-col items-center gap-2 rounded-lg bg-white p-2 shadow-md`}
+        >
+          <button>수정하기</button>
+          <button>삭제하기</button>
+        </div>
+      </div>
+    </div>
+  );
+};
+const Note = ({ noteIcon, todo }: NoteProps) => {
+  return (
+    <div className="ml-8 mt-2 flex gap-3 text-slate-700">
+      {noteIcon}
+      <p className={`${todo.status === "done" ? "line-through" : ""}`}>
+        {todo.hasNote}
+      </p>
+    </div>
+  );
+};
 
 function ListTodoStructure({ fetchTodos }: ListTodoProps) {
   const [filter, setFilter] = useState<"all" | "todo" | "done">("all");
@@ -78,51 +164,45 @@ function ListTodoStructure({ fetchTodos }: ListTodoProps) {
   });
 
   useEffect(() => {
-    if (data) {
-      const allTodos = data.pages
+    setTodos(
+      (data?.pages ?? [])
         .flatMap((page) => page.todos)
-        .filter((x) => (filter === "all" ? true : x.status === filter));
-      setTodos(allTodos);
-    }
+        .filter((x) => filter === "all" || x.status === filter),
+    );
   }, [data, filter]);
 
   const toggleStatus = (id: string) => {
-    setTodos((prevTodos) =>
-      prevTodos.map((todo) =>
-        todo.id === id
-          ? { ...todo, status: todo.status === "todo" ? "done" : "todo" }
-          : todo,
-      ),
-    );
+    setTodos((prevTodos) => {
+      const updatedTodos = new Map(prevTodos.map((todo) => [todo.id, todo]));
+      if (updatedTodos.has(id)) {
+        updatedTodos.set(id, {
+          ...updatedTodos.get(id)!,
+          status: updatedTodos.get(id)!.status === "todo" ? "done" : "todo",
+        });
+      }
+      return Array.from(updatedTodos.values());
+    });
   };
 
-  const statusButtons = (status: string) => {
-    if (status === "todo") {
-      return "To do";
-    }
-    if (status === "done") {
-      return "Done";
-    }
-    return "All";
+  const statusLabels: Record<"all" | "todo" | "done", string> = {
+    all: "All",
+    todo: "To do",
+    done: "Done",
   };
 
-  const statusMap = (["all", "todo", "done"] as const).map((status) => {
-    return (
-      <li
-        key={status}
-        className={`${
-          status === filter ? "border-blue-500 bg-blue-500 text-white" : ""
-        } cursor-pointer rounded-3xl border px-3 py-1`}
-      >
-        <button onClick={() => setFilter(status)}>
-          {statusButtons(status)}
-        </button>
-      </li>
-    );
-  });
+  const statusMap = (["all", "todo", "done"] as const).map((status) => (
+    <li
+      key={status}
+      className={`${
+        status === filter ? "border-blue-500 bg-blue-500 text-white" : ""
+      } cursor-pointer rounded-3xl border px-3 py-1`}
+    >
+      <button onClick={() => setFilter(status)}>{statusLabels[status]}</button>
+    </li>
+  ));
 
   const handleKebabClick = (index: number) =>
-    setActiveKebab(index === activeKebab ? null : index);
+    setActiveKebab((prev) => (prev === index ? null : index));
 
   const noteIcon = (
     <svg
@@ -165,72 +245,29 @@ function ListTodoStructure({ fetchTodos }: ListTodoProps) {
   );
 
   return (
-    <div className="mx-auto w-full max-w-2xl rounded-xl bg-white p-6 text-sm text-slate-800">
+    <div className="mx-auto min-h-[2080px] w-full max-w-2xl rounded-xl bg-white p-6 text-sm text-slate-800">
       <ul className="mb-6 flex gap-2">{statusMap}</ul>
       <ul className="space-y-4">
         {todos.map((todo, index) => (
           <li key={todo.id}>
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <label
-                  htmlFor={`todo-check-${index}`}
-                  className="relative flex cursor-pointer items-center"
-                >
-                  <input
-                    type="checkbox"
-                    id={`todo-check-${index}`}
-                    checked={todo.status === "done"}
-                    onChange={() => toggleStatus(todo.id)}
-                    className="peer absolute hidden"
-                  />
-                  <div className="flex h-5 w-5 items-center justify-center rounded-md border peer-checked:border-blue-500 peer-checked:bg-blue-500">
-                    <span className="absolute h-full w-full text-center text-sm font-bold text-white">
-                      ✓
-                    </span>
-                  </div>
-                </label>
-                <span
-                  className={`${todo.status === "done" ? "line-through" : ""}`}
-                >
-                  {todo.title}
-                </span>
-              </div>
-              <div className="flex items-center gap-3">
-                {todo.hasLink && <p>링크</p>}
-                {todo.hasFile && <p>파일</p>}
-                <div className="relative">
-                  <button onClick={() => handleKebabClick(index)}>...</button>
-                  <div
-                    className={`${activeKebab !== index ? "hidden" : "flex"} absolute -left-16 z-10 w-20 flex-col items-center gap-2 rounded-lg bg-white p-2 shadow-md`}
-                  >
-                    <button>수정하기</button>
-                    <button>삭제하기</button>
-                  </div>
-                </div>
-              </div>
+              <TodoTitleAndCheckBox
+                index={index}
+                todo={todo}
+                toggleStatus={toggleStatus}
+              />
+              <TodoEditAndDeleteAndIcons
+                activeKebab={activeKebab}
+                handleKebabClick={handleKebabClick}
+                index={index}
+                todo={todo}
+              />
             </div>
-            {todo.hasNote && (
-              <div className="ml-8 mt-2 flex gap-3 text-slate-700">
-                {noteIcon}
-                <p
-                  className={`${todo.status === "done" ? "line-through" : ""}`}
-                >
-                  {todo.hasNote}
-                </p>
-              </div>
-            )}
+            {todo.hasNote && <Note todo={todo} noteIcon={noteIcon} />}
           </li>
         ))}
       </ul>
-      <div ref={setTarget} className="h-[1rem]" />
+      <div ref={setTarget} className="h-[.5px]" />
     </div>
-  );
-}
-
-export default function ListTodo(/* { fetchTodos }: ListTodoProps */) {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <ListTodoStructure fetchTodos={mockFetchTodos} />
-    </QueryClientProvider>
   );
 }

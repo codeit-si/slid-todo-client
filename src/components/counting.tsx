@@ -14,10 +14,10 @@ interface CountingProps {
 const Counting = ({ type, count, total }: CountingProps) => {
   return (
     <div
-      className={`font-pretendard absolute flex items-center justify-center rounded-[4px] text-xs font-medium ${
+      className={`font-pretendard absolute flex items-center justify-center rounded-lg text-xs font-medium ${
         type === "title"
-          ? "h-[20px] bg-white/50 px-1 text-slate-800"
-          : "h-[16px] text-slate-800"
+          ? "h-5 bg-white/50 px-1 text-slate-800"
+          : "h-4 text-slate-800"
       }`}
     >
       {type === "title" ? (
